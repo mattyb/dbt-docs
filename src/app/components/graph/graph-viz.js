@@ -11,8 +11,12 @@ const cytoscape_ctx_menu = require('cytoscape-context-menus');
 cytoscape_ctx_menu(cytoscape, $);
 
 const dagre = require('cytoscape-dagre');
+const expandCollapse = require("cytoscape-expand-collapse");
+
 cytoscape.use(dagre);
 
+//TODO: conditional init
+expandCollapse(cytoscape);
 
 angular
 .module('dbt')
@@ -74,6 +78,7 @@ angular
             elements: scope.vizElements || [],
             layout: scope.vizLayout || {name: "circle"}
         }));
+        console.log(scope.vizElements);
 
         if (!window.graph) {
             window.graph = cy;
@@ -108,6 +113,7 @@ angular
             cy.add(nv);
             rerender(scope, cy);
             console.log('elements changed, UPDATE');
+            console.log(scope.vizElements);
         });
 
         scope.$watch('vizLayout', function(nv,ov){

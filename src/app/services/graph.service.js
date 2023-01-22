@@ -285,8 +285,38 @@ angular
         return res
     }
 
+    function getGroup(node) {
+      return node.data.resource_type;
+    };
+    
+
     function setNodes(node_ids, highlight, classes) {
+        console.log(service.graph);
         var nodes = _.map(node_ids, function(id) { return service.graph.pristine.nodes[id] });
+        console.log('nodes');
+        console.log(nodes);
+        const GROUPING = true;
+
+        if (GROUPING) { 
+            var groupIds = _.map(nodes, getGroup);
+            var groupCount = _.countBy(groupIds, function(groupId) { return groupId});
+            console.log('groups')
+            console.log(groupIds)
+            console.log(groupCount)
+            var groupNodes = _.map(
+                _.uniq(_.filter(groupIds, function(groupId) { return groupCount[groupId] > 1 })),
+                function(groupId) { return { 
+                    group: "nodes", 
+                    data: { 
+                      id: groupId,
+                      is_group: true,
+                    }} 
+                });
+            console.log('groupNodes');
+            console.log(groupNodes);
+            nodes = nodes.concat(groupNodes);
+        };
+
         var edges = [];
         _.flatten(_.each(node_ids, function(id) {
             var node_edges = service.graph.pristine.edges[id]
@@ -308,14 +338,21 @@ angular
 
         _.each(elements, function(el) {
             el.data['display'] = 'element';
+            // TODO: parent seems reused
+            if (GROUPING && groupCount[getGroup(el)] > 1) {
+              el.data['parent'] = getGroup(el);
+            };
             el.classes = classes;
 
             if (highlight && _.includes(highlight, el.data.unique_id)) {
                 el.data['selected'] = 1;
+                if (elements[el.data.parent]) {
+                  elements.data['selected'] = 1;
+                };
             }
 
             // models can be hidden if docs.show === false
-            if (! ( _.get(el,['data', 'docs','show'],true)) ) {
+            if (!( _.get(el, ['data', 'docs','show'], true)) ) {
                 el.data['hidden'] = 1;
             }
 
@@ -364,14 +401,23 @@ angular
             var node_obj = {
                 group: "nodes",
                 data: _.assign(node, {
-                    parent: node.package_name,
                     id: node.unique_id,
                     is_group: 'false'
                 })
-            }
+            };
+                
+            var parent_obj = {
+                group: "nodes",
+                data: {
+                    id: node.path,
+                    is_group: 'true'
+                }
+            };
 
             service.graph.pristine.nodes[node.unique_id] = node_obj;
+            //service.graph.pristine.nodes[node.path] = parent_obj;
         });
+
 
         _.each(service.manifest.parent_map, function(parents, child) {
             _.each(parents, function(parent) {
@@ -522,6 +568,9 @@ angular
 
         var g = service.graph_element;
 
+        console.log(service.graph.elements);
+        console.log(parents);
+        console.log(children);
         _.each(service.graph.elements, function(el) {
             var graph_el = g.$id(el.data.id);
             if (parents[el.data.source] && parents[el.data.target]) {

@@ -178,10 +178,15 @@ function selectNodes(dag, pristine, selected_spec) {
     // subtract from selection / matches
     nodes_to_include = _.difference(nodes_to_include, excluded.selected);
     matched_nodes = _.difference(matched_nodes, excluded.matched);
+    console.log(pristine);
+    console.log(nodes_to_include);
+    console.log(matched_nodes);
 
     // prune nodes by resource type / package name
     var nodes_to_prune = [];
+
     _.each(nodes_to_include, function(node_id) {
+        console.log(node_id);
         var node = pristine[node_id];
 
         if (!node.data.tags) {
