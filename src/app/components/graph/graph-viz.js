@@ -10,13 +10,12 @@ const cytoscape = require('cytoscape');
 const cytoscape_ctx_menu = require('cytoscape-context-menus');
 cytoscape_ctx_menu(cytoscape, $);
 
-const dagre = require('cytoscape-dagre');
 const expandCollapse = require("cytoscape-expand-collapse");
+expandCollapse(cytoscape, $);
+
+const dagre = require('cytoscape-dagre');
 
 cytoscape.use(dagre);
-
-//TODO: conditional init
-expandCollapse(cytoscape);
 
 angular
 .module('dbt')
@@ -76,8 +75,40 @@ angular
             container: document.getElementById('cy'),
             style: scope.vizStyle || [],
             elements: scope.vizElements || [],
-            layout: scope.vizLayout || {name: "circle"}
-        }));
+            layout: scope.vizLayout || {name: "circle"},
+            ready: function() {
+                console.log('ready');
+                console.log(expandCollapse);
+                this.expandCollapse({
+                    layoutBy: {
+                      name: "dagre",
+                      animate: "end",
+                      randomize: false,
+                      fit: true
+                    },
+                    fisheye: false,
+                    animate: true,
+                    undoable: false,
+                    cueEnabled: true,
+                    expandCollapseCuePosition: "top-left",
+                    expandCollapseCueSize: 16,
+                    expandCollapseCueLineSize: 24,
+                    //expandCueImage: "./imgs/ic_expand_more.svg",
+                    //collapseCueImage: "./imgs/ic_expand_less.svg",
+                    expandCollapseCueSensitivity: 1,
+                    edgeTypeInfo: "edgeType",
+                    groupEdgesOfSameTypeOnCollapse: false,
+                    allowNestedEdgeCollapse: true,
+                    zIndex: 999,
+                    /*ready: function() {
+                        console.log('expandCollapse ready');
+                    }*/
+                });
+                console.log('ready after expandCollapse');
+            }
+        })
+        );
+        console.log('scope.vizElements');
         console.log(scope.vizElements);
 
         if (!window.graph) {

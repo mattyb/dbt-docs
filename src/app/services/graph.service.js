@@ -326,6 +326,8 @@ angular
                 }
             });
         }));
+        console.log('edges');
+        console.log(edges);
 
         var elements = _.compact(nodes).concat(_.compact(edges));
 
