@@ -1,10 +1,8 @@
-
-
 .details-content {
-    table-layout: fixed;
+  table-layout: fixed;
 }
 
 .detail-body {
-    white-space: nowrap;
-    overflow-x: scroll;
+  white-space: nowrap;
+  overflow-x: scroll;
 }

@@ -1,79 +1,92 @@
 <style>
-/* TODO */
-.section-target {
+  /* TODO */
+  .section-target {
     top: -8em;
-}
+  }
 
-.noflex {
+  .noflex {
     flex: 0 0 160px !important;
-}
+  }
 
-.highlight {
+  .highlight {
     color: #24292e;
     background-color: white;
-}
-
+  }
 </style>
 
-<div class='app-scroll'>
-    <div class="app-links app-sticky">
-        <div class="app-title">
-            <div class="app-frame app-pad app-flush-bottom">
+<div class="app-scroll">
+  <div class="app-links app-sticky">
+    <div class="app-title">
+      <div class="app-frame app-pad app-flush-bottom">
+        <h1>
+          <span class="break">{{ metric.label }}</span>
+          <small>metric</small>
 
-                <h1>
-                    <span class="break">{{ metric.label }}</span>
-                    <small>metric</small>
+          <div class="clearfix"></div>
+        </h1>
+      </div>
+    </div>
+    <div class="app-frame app-pad-h">
+      <ul class="nav nav-tabs">
+        <li ui-sref-active="active">
+          <a ui-sref="dbt.metric({'#': 'details'})">Details</a>
+        </li>
+        <li ui-sref-active="active">
+          <a ui-sref="dbt.metric({'#': 'description'})">Description</a>
+        </li>
+        <li ui-sref-active="active" ng-show="parentsLength != 0">
+          <a ui-sref="dbt.metric({'#': 'depends_on'})">Depends On</a>
+        </li>
+        <li ui-sref-active="active">
+          <a ui-sref="dbt.metric({'#': 'code'})">SQL</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="app-details">
+    <div class="app-frame app-pad">
+      <section class="section">
+        <div class="section-target" id="details"></div>
+        <table-details model="metric" extras="extra_table_fields" />
+      </section>
 
-                    <div class='clearfix'></div>
-                </h1>
-
+      <section class="section">
+        <div class="section-target" id="description"></div>
+        <div class="section-content">
+          <h6>Description</h6>
+          <div class="panel">
+            <div class="panel-body">
+              <div
+                ng-if="metric.description"
+                class="model-markdown"
+                marked="metric.description"
+              ></div>
+              <div ng-if="!metric.description">
+                This {{ metric.resource_type }} is not currently documented
+              </div>
             </div>
+          </div>
         </div>
-        <div class="app-frame app-pad-h">
-            <ul class="nav nav-tabs">
-                <li ui-sref-active='active'><a ui-sref="dbt.metric({'#': 'details'})">Details</a></li>
-                <li ui-sref-active='active'><a ui-sref="dbt.metric({'#': 'description'})">Description</a></li>
-                <li ui-sref-active='active' ng-show = "parentsLength != 0"><a ui-sref="dbt.metric({'#': 'depends_on'})">Depends On</a></li>
-                <li ui-sref-active='active'><a ui-sref="dbt.metric({'#': 'code'})">SQL</a></li>
-            </ul>
+      </section>
+
+      <section class="section" ng-show="parentsLength != 0">
+        <div class="section-target" id="depends_on"></div>
+        <div class="section-content">
+          <h6>Depends On</h6>
+          <reference-list references="parents" node="metric" />
         </div>
+      </section>
+
+      <section class="section">
+        <div class="section-target" id="code"></div>
+        <div class="section-content">
+          <code-block
+            versions="versions"
+            default="default_version"
+            language="language"
+          ></code-block>
+        </div>
+      </section>
     </div>
-    <div class="app-details">
-        <div class="app-frame app-pad">
-
-            <section class="section">
-                <div class="section-target" id="details"></div>
-                <table-details model="metric" extras="extra_table_fields" />
-            </section>
-
-            <section class="section">
-                <div class="section-target" id="description"></div>
-                <div class="section-content">
-                    <h6>Description</h6>
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div ng-if="metric.description" class="model-markdown" marked="metric.description"></div>
-                            <div ng-if="!metric.description">This {{ metric.resource_type }} is not currently documented</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section" ng-show = "parentsLength != 0">
-                <div class="section-target" id="depends_on"></div>
-                <div class="section-content">
-                    <h6>Depends On</h6>
-                    <reference-list references="parents" node="metric" />
-                </div>
-            </section>
-
-
-            <section class="section">
-                <div class="section-target" id="code"></div>
-                <div class="section-content">
-                    <code-block versions="versions" default="default_version" language="language"></code-block>
-                </div>
-            </section>
-        </div>
-    </div>
+  </div>
 </div>
