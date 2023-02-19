@@ -26,7 +26,6 @@ angular
             } else if (node.name)  {
                 return node.name;
             } else {
-                debugger
                 return '*'
             }
         }

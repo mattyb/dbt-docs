@@ -1,6 +1,5 @@
 
 const graph = require("./selector_graph");
-const _ = require('underscore');
 const graphlib = require('graphlib');
 
 var dag = new graphlib.Graph({directed: true});

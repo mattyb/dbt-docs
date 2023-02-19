@@ -10,12 +10,11 @@ angular
     function($state, $q, graph, selectorService, project, trackingService, locationService) {
 
     var directive = {
-        restrict: 'EA',
         replace: true,
         scope: {},
         templateUrl: template,
 
-        link: function(scope, element) {
+        link: function(scope, _element) {
             scope.filters_visible = false;
 
             scope.graphService = graph;
@@ -37,7 +36,7 @@ angular
             scope.onWindowClick = function(e) {
                 var target = $(e.target);
 
-                var closest_dropup = $(e.target).closest(".dropup");
+                var closest_dropup = $(target).closest(".dropup");
                 if (!closest_dropup.length) {
                     forms.tags.visible = false;
                     forms.packages.visible = false;
@@ -50,8 +49,9 @@ angular
                     }
                 })
 
-                var parent = $(e.target).closest("#graph-viz-wrapper");
+                var parent = $(target).closest("#graph-viz-wrapper");
                 if (parent.length) {
+                    // eslint-disable-next-line angular/timeout-service -- TODO
                     setTimeout(function() {
                         $(":focus").blur()
                     });
@@ -87,7 +87,7 @@ angular
                 } else {
                     dirty[form] = [];
                 }
-                
+
                 scope.allSelected = !scope.allSelected;
                 e.preventDefault();
             }
@@ -148,15 +148,16 @@ angular
             scope.showExpanded = function() {
                 var node = selectorService.getViewNode();
                 var node_name = node ? node.name : null;
+                var nodes;
 
                 if (node && node.resource_type == 'source') {
-                    var nodes = graph.showFullGraph('source:' + node.source_name + "." + node.name);
+                    nodes = graph.showFullGraph('source:' + node.source_name + "." + node.name);
                 } else if (node && node.resource_type == 'exposure') {
-                    var nodes = graph.showFullGraph('exposure:' + node.name);
+                    nodes = graph.showFullGraph('exposure:' + node.name);
                 } else if (node && node.resource_type == 'metric') {
-                    var nodes = graph.showFullGraph('metric:' + node.name);
+                    nodes = graph.showFullGraph('metric:' + node.name);
                 } else {
-                    var nodes = graph.showFullGraph(node_name);
+                    nodes = graph.showFullGraph(node_name);
                 }
 
                 trackingService.track_graph_interaction('show-expanded', nodes.length);
@@ -164,14 +165,15 @@ angular
 
             scope.showContracted = function() {
                 var node = selectorService.getViewNode();
+                var nodes;
                 if (node && node.resource_type == 'source') {
-                    var nodes = graph.showVerticalGraph('source:' + node.source_name + "." + node.name, true);
+                    nodes = graph.showVerticalGraph('source:' + node.source_name + "." + node.name, true);
                 } else if (node && node.resource_type == 'exposure') {
-                    var nodes = graph.showVerticalGraph('exposure:' + node.name, true);
+                    nodes = graph.showVerticalGraph('exposure:' + node.name, true);
                 } else if (node && node.resource_type == 'metric') {
-                    var nodes = graph.showVerticalGraph('metric:' + node.name, true);
+                    nodes = graph.showVerticalGraph('metric:' + node.name, true);
                 } else {
-                    var nodes = graph.showVerticalGraph(node.name, true);
+                    nodes = graph.showVerticalGraph(node.name, true);
                 }
 
                 locationService.clearState();
@@ -192,6 +194,7 @@ angular
                     selectorService.resetSelection();
                     scope.showExpanded();
                     var spec = selectorService.selectSource($state.params.source, {children: true});
+                    // eslint-disable-next-line angular/timeout-service -- TODO
                     setTimeout(function() {
                         graph.updateGraph(spec)
                     });
@@ -204,7 +207,7 @@ angular
             scope.$watch(function() {
                 return selectorService.selection.dirty;
             },
-            function(nv, ov) {
+            function(_nv, _ov) {
                 if (!selectorService.isDirty()) {
                     graph.markAllClean();
                     return;

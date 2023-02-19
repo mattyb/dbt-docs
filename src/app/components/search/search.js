@@ -2,7 +2,6 @@
 
 const angular = require('angular');
 const template = require('./search.html');
-const $ = require('jquery');
 
 require('./../../services/project_service.js');
 
@@ -32,7 +31,7 @@ angular
                 show_tags: false
             };
 
-            scope.limit_search = function(res, index, results) {
+            scope.limit_search = function(res, index, _results) {
                 return (index < scope.max_results || scope.show_all);
             }
 
@@ -58,10 +57,10 @@ angular
                 if(!_.some(_.values(checkboxStatus))){
                     return results;
                 }
-                
+
                 let finalResults = [];
                 let fileIDs = [];
-                
+
                 const {show_names, show_descriptions, show_columns, show_code, show_tags} = checkboxStatus;
                 _.each(results, function(result){
                     _.each(result.matches, function(match){
@@ -88,11 +87,11 @@ angular
             });
 
             scope.shorten = function(text) {
-                if(text != null && text.trim().length > 0 && scope.query != null && scope.query.trim().length > 0){  
-                    let modified = text.replace(/\s+/g, ' '); 
-                    //choose the first word in the search as the anchor for shortening. 
+                if(text != null && text.trim().length > 0 && scope.query != null && scope.query.trim().length > 0){
+                    let modified = text.replace(/\s+/g, ' ');
+                    //choose the first word in the search as the anchor for shortening.
                     //Escaping in case the first token is "*" or another reserved regex character
-                    let first_token = escapeRegExp(getQueryTokens(scope.query)[0]); 
+                    let first_token = escapeRegExp(getQueryTokens(scope.query)[0]);
                     let indexOfInstance = modified.search(new RegExp(first_token));
                     let startIndex = (indexOfInstance - 75) < 0 ? 0 : indexOfInstance - 75;
                     let endIndex = (indexOfInstance + 75) > modified.length ? modified.length : indexOfInstance + 75;
@@ -110,11 +109,11 @@ angular
                 //e.g. "hello WORLD" changes to "(hello)|(world)"
                 let query_segments = getQueryTokens(scope.query);
                 let escaped_segments = query_segments.map(segment => escapeRegExp(segment));
-                let highlight_words = "(" + escaped_segments.join(")|(") + ")"; 
+                let highlight_words = "(" + escaped_segments.join(")|(") + ")";
                 return $sce.trustAsHtml(text.replace(new RegExp(highlight_words, 'gi'), '<span class="search-result-match">$&</span>'));
             }
 
-            scope.$watch("query", function(nv, ov) {
+            scope.$watch("query", function(nv, _ov) {
                 if (nv.length == 0) {
                     scope.show_all = false;
                     scope.limit_columns = {};

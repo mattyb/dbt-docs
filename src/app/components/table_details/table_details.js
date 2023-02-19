@@ -79,8 +79,8 @@ angular
                 var metadata = model.metadata || {};
 
                 var database;
-                if (!model.database) { 
-                    database = '' 
+                if (!model.database) {
+                    database = ''
                 } else {
                     database = model.database + '.'
                 }
@@ -148,13 +148,11 @@ angular
                 return mapped;
             }
 
-            scope.$watch("model", function(nv, ov) {
-                var get_type = _.property(['metadata', 'type'])
-                var rel_type = get_type(nv);
-
+            scope.$watch("model", function(nv, _ov) {
+                // eslint-disable-next-line no-prototype-builtins
                 var sources_meta = nv.hasOwnProperty('sources') ? nv.sources[0] != undefined ? nv.sources[0].source_meta : null : null;
                 scope.meta = nv.meta || sources_meta;
-                
+
                 scope.details = getBaseStats(nv);
                 scope.extended = getExtendedStats(nv.stats);
 

@@ -16,7 +16,7 @@ angular
         },
         replace: true,
         templateUrl: model_template,
-        link: function linkFn(scope,element,attrs,ctrlFn) {
+        link: function linkFn(scope, _element, _attrs, _ctrlFn) {
             if (!scope.depth) {
                 scope.depth = 0;
             }
@@ -27,7 +27,7 @@ angular
             var name = scope.item.name;
 
             // name *should* always exists but there is a bug where some items don't make it into the catalog.
-            // This allows docs to continue to work while the bug gets fixed outside dbt-docs.  Once the bug 
+            // This allows docs to continue to work while the bug gets fixed outside dbt-docs.  Once the bug
             // is fixed, we will just never fall into this if.
             // relevant issue: https://github.com/dbt-labs/dbt-spark/issues/295
             if (!name) {

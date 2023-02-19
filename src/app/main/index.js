@@ -16,7 +16,7 @@ require('../services/location_service.js');
 
 angular
 .module('dbt')
-.controller('MainController', ['$scope', '$route', '$state', 'project', 'graph', 'selectorService', 'trackingService', 'locationService', '$transitions',
+.controller('MainCtrl', ['$scope', '$route', '$state', 'project', 'graph', 'selectorService', 'trackingService', 'locationService', '$transitions',
     function($scope, $route, $state, projectService, graphService, selectorService, trackingService, locationService, $transitions) {
 
     $scope.tree = {
@@ -36,7 +36,7 @@ angular
     $scope.project = {};
 
 
-    $('body').bind('keydown', function(e) {
+    $('body').bind('keydown', function(event) {
         if (event.key == 't' && event.target.tagName != 'INPUT') {
             console.log("Opening search");
             // TODO : Make a directive, broadcast events, etc etc
@@ -89,6 +89,7 @@ angular
         $scope.tree.exposures = tree.exposures;
         $scope.tree.metrics = tree.metrics;
 
+        // eslint-disable-next-line angular/timeout-service -- TODO
         setTimeout(function() {
             scrollToSelectedModel($scope.model_uid);
         })
@@ -99,6 +100,7 @@ angular
             return;
         }
 
+        // eslint-disable-next-line angular/timeout-service -- TODO
         setTimeout(function() {
             // TODO : Two different elements?
             var el = $("*[data-nav-unique-id='" + unique_id + "']");
@@ -108,7 +110,7 @@ angular
         }, 1)
     }
 
-    $transitions.onSuccess({}, function(transition, state) {
+    $transitions.onSuccess({}, function(transition, _state) {
         var params = transition.router.globals.params;
 
         var prev_node = selectorService.getViewNode();
@@ -121,7 +123,7 @@ angular
         var state_changed = true;
         if (from_state == to_state && prev_node_id == cur_node_id) {
             state_changed = false;
-        } 
+        }
 
         if (state_changed && params.unique_id) {
             var tree = projectService.updateSelected(params.unique_id);
@@ -133,6 +135,7 @@ angular
             console.log("updating selected model to: ", params);
             setSelectedModel(params.unique_id);
 
+            // eslint-disable-next-line angular/timeout-service -- TODO
             setTimeout(function() {
                 scrollToSelectedModel(params.unique_id);
             });
@@ -209,7 +212,7 @@ angular
                     result.overallWeight += (count * criteriaArr[criteria]);
                 }
             });
-        }); 
+        });
         return results;
     }
 

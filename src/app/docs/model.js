@@ -6,8 +6,8 @@ require("./styles.css");
 
 angular
 .module('dbt')
-.controller('ModelCtrl', ['$scope', '$state', 'project', 'code', '$anchorScroll', '$location',
-            function($scope, $state, projectService, codeService, $anchorScroll, $location) {
+.controller('ModelCtrl', ['$scope', '$state', 'project', 'code', '$anchorScroll',
+            function($scope, $state, projectService, codeService, $anchorScroll) {
 
     $scope.model_uid = $state.params.unique_id;
     $scope.tab = $state.params.tab;
@@ -19,6 +19,7 @@ angular
     $scope.copy_to_clipboard = function(sql) {
         codeService.copy_to_clipboard(sql)
         $scope.copied = true;
+        // eslint-disable-next-line angular/timeout-service -- TODO
         setTimeout(function() {
             $scope.$apply(function() {
                 $scope.copied = false;
@@ -44,6 +45,7 @@ angular
             'Compiled': $scope.model.compiled_code || default_compiled
         }
 
+        // eslint-disable-next-line angular/timeout-service -- TODO
         setTimeout(function() {
             $anchorScroll();
         }, 0);

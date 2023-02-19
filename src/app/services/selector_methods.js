@@ -2,10 +2,6 @@
 const _ = require('underscore');
 const selectorMatcher = require('./selector_matcher')
 
-var SELECTOR_AT = '@'
-var SELECTOR_PARENTS = '+'
-var SELECTOR_CHILDREN = '+'
-
 var DELIM_UNION = ' ';
 var DELIM_INTERSECTION = ',';
 
@@ -32,6 +28,7 @@ function parseSpec(node_spec) {
 
     var selector_regex = new RegExp(''
         + /^/.source
+        // eslint-disable-next-line no-useless-escape
         + /(?<childs_parents>(\@))?/.source
         + /(?<parents>((?<parents_depth>(\d*))\+))?/.source
         + /((?<method>([\w.]+)):)?/.source
@@ -56,6 +53,7 @@ function parseSpec(node_spec) {
 
     var selector_method = parsed.method;
     var selector_value = parsed.value;
+    var selector_modifier;
 
     // TODO : We should probably make select_at and select_parents/select_children
     // mutually exclusive. It would be nice if this could raise and show an error
@@ -149,9 +147,6 @@ function applySpec(selectorString, getMatchingNodes) {
 
 function selectNodes(dag, pristine, selected_spec) {
 
-    var include = selected_spec.include;
-    var exclude = selected_spec.exclude;
-
     var getter = _.partial(
         selectorMatcher.getNodesFromSpec,
         dag,
@@ -159,7 +154,6 @@ function selectNodes(dag, pristine, selected_spec) {
         selected_spec.hops
     )
 
-    var pristine_nodes = _.values(pristine);
     var included;
 
     // if no selection, include all nodes

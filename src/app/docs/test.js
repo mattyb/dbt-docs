@@ -6,8 +6,8 @@ require("./styles.css");
 
 angular
 .module('dbt')
-.controller('TestCtrl', ['$scope', '$state', 'project', 'code', '$anchorScroll', '$location',
-            function($scope, $state, projectService, codeService, $anchorScroll, $location) {
+.controller('TestCtrl', ['$scope', '$state', 'project', 'code', '$anchorScroll',
+            function($scope, $state, projectService, codeService, $anchorScroll) {
 
     $scope.model_uid = $state.params.unique_id;
     $scope.tab = $state.params.tab;
@@ -32,6 +32,7 @@ angular
             'Compiled': $scope.model.compiled_code || default_compiled
         }
 
+        // eslint-disable-next-line angular/timeout-service
         setTimeout(function() {
             $anchorScroll();
         }, 0);

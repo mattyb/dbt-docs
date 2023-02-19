@@ -1,15 +1,11 @@
 
 
 const angular = require('angular');
-const md5 = require('md5');
 
 angular
 .module('dbt')
-.factory('trackingService', ['$location', 'selectorService', '$rootScope',
-         function($location, selectorService, $rootScope) {
-
-
-    var COLLECTOR = "https://fishtownanalytics.sinter-collect.com";
+.factory('trackingService', ['selectorService', '$rootScope', '$window',
+         function(selectorService, $rootScope, $window) {
 
     var service = {
         initialized: false,
@@ -32,7 +28,7 @@ angular
     }
 
     service.isHosted = function() {
-        return window.location.hostname.indexOf('.getdbt.com') > -1;
+        return $window.location.hostname.indexOf('.getdbt.com') > -1;
     }
 
     service.turn_on_tracking = function() {
@@ -55,7 +51,7 @@ angular
             trackerParams.cookieDomain = '.getdbt.com';
         }
 
-        service.snowplow = window.snowplow;
+        service.snowplow = $window.snowplow;
         service.snowplow(
             'newTracker',
             'sp',

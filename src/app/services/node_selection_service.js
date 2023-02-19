@@ -1,11 +1,10 @@
 
-const $ = require('jquery');
 const _ = require('underscore');
 const selectorMethods = require('./selector_methods');
 
 angular
 .module('dbt')
-.factory('selectorService', ["$state", function($state) {
+.factory('selectorService', [function() {
 
     var initial_selector = {
         include: '',
@@ -119,7 +118,6 @@ angular
     }
 
     service.isDirty = function() {
-        var keys = ['include', 'exclude', 'packages', 'tags', 'resource_types']
         var res = _.isEqual(service.selection.clean, service.selection.dirty);
         return !res
     }

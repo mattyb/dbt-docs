@@ -1,6 +1,9 @@
 {
   "scripts": {
     "test": "jest src/app/services",
+    "lint": "eslint src/",
+    "prettier:check": "prettier --check src",
+    "prettier:write": "prettier --write src",
     "watch": "jest --watch src/app/services",
     "start": "npx webpack serve"
   },
@@ -23,6 +26,10 @@
     "cytoscape-expand-collapse": "^3.1.1",
     "dagre": "^0.8.5",
     "deepmerge": "^2.1.1",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-angular": "^4.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "file-loader": "^1.1.11",
     "html-loader": "^0.5.5",
     "html-webpack-inline-source-plugin": "^0.0.10",
@@ -34,6 +41,7 @@
     "jquery": "^3.5.1",
     "md5": "^2.2.1",
     "ngtemplate-loader": "^2.0.1",
+    "prettier": "2.8.4",
     "prism-themes": "^1.4.0",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",

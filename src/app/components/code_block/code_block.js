@@ -1,9 +1,6 @@
 'use strict';
 
 const template = require('./code_block.html');
-const $ = require('jquery');
-
-const css = require("./code_block.css")
 
 function getLanguageClass(language) {
     return language === 'python'
@@ -22,7 +19,7 @@ angular
         },
         restrict: 'E',
         templateUrl: template,
-        link: function(scope, element) {
+        link: function(scope, _element) {
             scope.selected_version = scope.default;
             scope.language_class = getLanguageClass(scope.language);
             scope.source = null;
@@ -49,6 +46,7 @@ angular
             scope.copy_to_clipboard = function() {
                 codeService.copy_to_clipboard(scope.source)
                 scope.copied = true;
+                // eslint-disable-next-line angular/timeout-service -- TODO
                 setTimeout(function() {
                     scope.$apply(function() {
                        scope.copied = false;
@@ -62,7 +60,7 @@ angular
                 }
             }, true)
 
-            scope.$watch('versions', function(nv, ov) {
+            scope.$watch('versions', function(nv, _ov) {
                 if (nv) {
                     if (scope.default) {
                         scope.setSelected(scope.default);
