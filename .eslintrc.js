@@ -28,9 +28,8 @@ module.exports = {
     "angular/controller-as": "off",
     "angular/no-run-logic": "off",
     "angular/function-type": ["error", "anonymous"],
-    // TODO
-    "angular/file-name": "off",
-    "angular/controller-name": "off",
+    "angular/controller-name": ["error", "/[A-Z].*Ctrl/"],
+    "angular/file-name": ["off"],
   },
   "globals": {
     "angular": "readonly",

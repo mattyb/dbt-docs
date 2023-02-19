@@ -16,7 +16,7 @@ require('../services/location_service.js');
 
 angular
 .module('dbt')
-.controller('MainController', ['$scope', '$route', '$state', 'project', 'graph', 'selectorService', 'trackingService', 'locationService', '$transitions',
+.controller('MainCtrl', ['$scope', '$route', '$state', 'project', 'graph', 'selectorService', 'trackingService', 'locationService', '$transitions',
     function($scope, $route, $state, projectService, graphService, selectorService, trackingService, locationService, $transitions) {
 
     $scope.tree = {

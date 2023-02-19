@@ -29,7 +29,7 @@ angular
             if (sources.length == 0) {
                 return;
             }
-            
+
             // sort sources by sources.name
             sources.sort((a,b) => a.name.localeCompare(b.name));
 
