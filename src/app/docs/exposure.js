@@ -1,14 +1,15 @@
-'use strict';
+"use strict";
 
-const angular = require('angular');
-const dag_utils = require('./dag_utils')
+const angular = require("angular");
+const dag_utils = require("./dag_utils");
 require("./styles.css");
 
-angular
-.module('dbt')
-.controller('ExposureCtrl', ['$scope', '$state', 'project', 'code',
-            function($scope, $state, projectService, codeService) {
-
+angular.module("dbt").controller("ExposureCtrl", [
+  "$scope",
+  "$state",
+  "project",
+  "code",
+  function ($scope, $state, projectService, codeService) {
     $scope.model_uid = $state.params.unique_id;
     $scope.project = projectService;
 
@@ -17,30 +18,31 @@ angular
     $scope.versions = {};
 
     $scope.exposure = {};
-    projectService.ready(function(project) {
-        let exposure = project.nodes[$scope.model_uid];
-        $scope.exposure = exposure;
-        $scope.parents = dag_utils.getParents(project, exposure);
-        $scope.parentsLength = $scope.parents.length;
-        $scope.language = exposure.language;
+    projectService.ready(function (project) {
+      let exposure = project.nodes[$scope.model_uid];
+      $scope.exposure = exposure;
+      $scope.parents = dag_utils.getParents(project, exposure);
+      $scope.parentsLength = $scope.parents.length;
+      $scope.language = exposure.language;
 
-        $scope.extra_table_fields = [
-            {
-                name: "Maturity",
-                value: $scope.exposure.maturity,
-            },
-            {
-                name: "Owner",
-                value: $scope.exposure.owner.name,
-            },
-            {
-                name: "Owner email",
-                value: $scope.exposure.owner.email,
-            },
-            {
-                name: "Exposure name",
-                value: $scope.exposure.name,
-            },
-        ]
-    })
-}]);
+      $scope.extra_table_fields = [
+        {
+          name: "Maturity",
+          value: $scope.exposure.maturity,
+        },
+        {
+          name: "Owner",
+          value: $scope.exposure.owner.name,
+        },
+        {
+          name: "Owner email",
+          value: $scope.exposure.owner.email,
+        },
+        {
+          name: "Exposure name",
+          value: $scope.exposure.name,
+        },
+      ];
+    });
+  },
+]);

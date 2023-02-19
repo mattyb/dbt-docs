@@ -1,90 +1,89 @@
-const angular = require('angular');
-const _ = require('underscore');
+const angular = require("angular");
+const _ = require("underscore");
 
-import Prism from 'prismjs';
+import Prism from "prismjs";
 // eslint-disable-next-line angular/window-service -- TODO
 window.Prism = Prism;
 
-import 'prismjs/components/prism-sql';
-import 'prismjs/components/prism-python';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css'
-import 'prism-themes/themes/prism-ghcolors.css';
+import "prismjs/components/prism-sql";
+import "prismjs/components/prism-python";
+import "prismjs/plugins/line-numbers/prism-line-numbers.js";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import "prism-themes/themes/prism-ghcolors.css";
 
-angular
-.module('dbt')
-.factory('code', ['$sce', '$document', function($sce, $document) {
-
-    var service = {}
+angular.module("dbt").factory("code", [
+  "$sce",
+  "$document",
+  function ($sce, $document) {
+    var service = {};
 
     // big hack
     service.copied = false;
 
-    service.highlight = function(code, language = 'sql') {
-        var highlighted;
-        if (language == 'sql') {
-            highlighted = Prism.highlight(code, Prism.languages.sql, 'sql')
-        }
-        else if (language == 'python') {
-            highlighted = Prism.highlight(code, Prism.languages.python, 'python')
-        }
-        return $sce.trustAsHtml(highlighted);
-    }
-
-    service.copy_to_clipboard = function(text) {
-        var el = $document.createElement('textarea');
-        el.value = text;
-        el.setAttribute('readonly', '');
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        $document.body.appendChild(el);
-        el.select();
-        $document.execCommand('copy');
-        $document.body.removeChild(el);
+    service.highlight = function (code, language = "sql") {
+      var highlighted;
+      if (language == "sql") {
+        highlighted = Prism.highlight(code, Prism.languages.sql, "sql");
+      } else if (language == "python") {
+        highlighted = Prism.highlight(code, Prism.languages.python, "python");
+      }
+      return $sce.trustAsHtml(highlighted);
     };
 
-    service.generateSourceSQL = function(model) {
-        var query = ["select"]
+    service.copy_to_clipboard = function (text) {
+      var el = $document.createElement("textarea");
+      el.value = text;
+      el.setAttribute("readonly", "");
+      el.style.position = "absolute";
+      el.style.left = "-9999px";
+      $document.body.appendChild(el);
+      el.select();
+      $document.execCommand("copy");
+      $document.body.removeChild(el);
+    };
 
-        var num_columns = _.size(model.columns);
-        var cols = _.keys(model.columns);
-        _.each(cols, function(name, i) {
-            var line = "    " + name;
-            if (i + 1 != num_columns) {
-                line += ",";
-            }
-            query.push(line);
-        });
+    service.generateSourceSQL = function (model) {
+      var query = ["select"];
 
-        const database = model.database ? model.database + '.' : '';
-        const rel = database + model.schema + "." + model.identifier;
-
-        query.push("from " + rel)
-        return query.join("\n");
-    }
-
-    service.generateMetricSQL = function(metric) {
-        if (metric.calculation_method == 'derived') {
-            return "-- derived\n" + metric.expression;
+      var num_columns = _.size(model.columns);
+      var cols = _.keys(model.columns);
+      _.each(cols, function (name, i) {
+        var line = "    " + name;
+        if (i + 1 != num_columns) {
+          line += ",";
         }
+        query.push(line);
+      });
 
-        const queryParts = [
-            `select ${metric.calculation_method}(${metric.expression})` ,
-            `from {{ ${metric.model} }}`,
-        ];
+      const database = model.database ? model.database + "." : "";
+      const rel = database + model.schema + "." + model.identifier;
 
-        if (metric.filters.length > 0) {
-            const filterExprs = metric.filters.map(filter => (
-                `${filter.field} ${filter.operator} ${filter.value}`
-            ));
+      query.push("from " + rel);
+      return query.join("\n");
+    };
 
-            const filters = filterExprs.join(' AND ');
-            queryParts.push(`where ${filters}`);
-        }
+    service.generateMetricSQL = function (metric) {
+      if (metric.calculation_method == "derived") {
+        return "-- derived\n" + metric.expression;
+      }
 
-        return queryParts.join('\n');
-    }
+      const queryParts = [
+        `select ${metric.calculation_method}(${metric.expression})`,
+        `from {{ ${metric.model} }}`,
+      ];
+
+      if (metric.filters.length > 0) {
+        const filterExprs = metric.filters.map(
+          (filter) => `${filter.field} ${filter.operator} ${filter.value}`
+        );
+
+        const filters = filterExprs.join(" AND ");
+        queryParts.push(`where ${filters}`);
+      }
+
+      return queryParts.join("\n");
+    };
 
     return service;
-
-}]);
+  },
+]);
