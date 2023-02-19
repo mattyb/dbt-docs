@@ -17,7 +17,7 @@ module.exports = {
     "es6": true,
     "amd": true,
     "commonjs": true,
-    "es2017": true,
+    "es2018": true,
   },
   "parserOptions": {
     "sourceType": "module",
@@ -26,9 +26,11 @@ module.exports = {
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "angular/controller-as-route": "off",
     "angular/controller-as": "off",
-    "angular/file-name": "warn",
-    "angular/controller-name": "warn",
+    "angular/no-run-logic": "off",
     "angular/function-type": ["error", "anonymous"],
+    // TODO
+    "angular/file-name": "off",
+    "angular/controller-name": "off",
   },
   "globals": {
     "angular": "readonly",

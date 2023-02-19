@@ -6,8 +6,8 @@ require("./styles.css");
 
 angular
 .module('dbt')
-.controller('SourceCtrl', ['$scope', '$state', 'project', 'code', '$anchorScroll', '$location',
-            function($scope, $state, projectService, codeService, $anchorScroll, $location) {
+.controller('SourceCtrl', ['$scope', '$state', 'project', 'code',
+            function($scope, $state, projectService, codeService) {
 
     $scope.model_uid = $state.params.unique_id;
     $scope.project = projectService;

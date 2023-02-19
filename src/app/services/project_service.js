@@ -1,6 +1,5 @@
 
 const angular = require('angular');
-const $ = require('jquery');
 const _ = require('lodash');
 
 import merge from 'deepmerge';
@@ -9,6 +8,7 @@ function capitalizeType(type) {
     var staticCapitalizations = {
         'ml': "ML",
     }
+    // eslint-disable-next-line no-prototype-builtins -- TODO
     if (staticCapitalizations.hasOwnProperty(type)) {
         return staticCapitalizations[type];
     }
@@ -142,7 +142,7 @@ angular
 
             // Add exposures back into nodes to make site logic work
             _.each(service.files.manifest.exposures, function(node) {
-                // Since label is a new field for exposures we don't want to 
+                // Since label is a new field for exposures we don't want to
                 // immediately make docs unusable because the label is empty.
                 // This will default the label to be the name when not filled.
                 if (!node.label){
@@ -150,7 +150,7 @@ angular
                 }
                 service.files.manifest.nodes[node.unique_id] = node;
             });
-            
+
             // Add metrics back into nodes to make site logic work
             _.each(service.files.manifest.metrics, function(node) {
                 service.files.manifest.nodes[node.unique_id] = node;
@@ -169,6 +169,7 @@ angular
             var tests = _.filter(project.nodes, {resource_type: 'test'})
             _.each(tests, function(test) {
 
+                // eslint-disable-next-line no-prototype-builtins -- TODO
                 if (!test.hasOwnProperty('test_metadata')) {
                     return;
                 }
@@ -201,10 +202,11 @@ angular
                     test_info.short = 'F';
                     test_info.label = 'Foreign Key';
                 } else if (test.test_metadata.name == 'accepted_values') {
+                    var values;
                     if (Array.isArray(test.test_metadata.kwargs.values)) {
-                        var values = test.test_metadata.kwargs.values.join(", ")
+                        values = test.test_metadata.kwargs.values.join(", ")
                     } else {
-                        var values = JSON.stringify(test.test_metadata.kwargs.values);
+                        values = JSON.stringify(test.test_metadata.kwargs.values);
                     }
                     test_info.short = 'A';
                     test_info.label = 'Accepted Values: ' + values;
@@ -217,10 +219,11 @@ angular
                 var depends_on = test.depends_on.nodes;
                 var test_column = test.column_name || test.test_metadata.kwargs.column_name || test.test_metadata.kwargs.arg;
                 if (depends_on.length && test_column) {
+                    var model;
                     if (test.test_metadata.name == 'relationships') {
-                        var model = depends_on[depends_on.length - 1];
+                        model = depends_on[depends_on.length - 1];
                     } else {
-                        var model = depends_on[0]
+                        model = depends_on[0]
                     }
                     var node = project.nodes[model];
                     var column = _.find(node.columns, function(col, col_name) {
@@ -270,9 +273,9 @@ angular
             'arguments': 'array',
             'label': 'string',
         };
-        
+
         let query_segments = _.words(query.toLowerCase());
-      
+
         for (var i in search_keys) {
             if (!obj[i]) {
                continue;
@@ -337,16 +340,16 @@ angular
             package_macros[macro.package_name][macro.name] = macro
         });
 
-        var macros = [];
+        var newMacros = [];
         _.each(package_macros, function(package_macros, package_name) {
             if (package_name == 'dbt' || package_name == 'dbt_' + adapter) {
                 return
             }
-            var pkg_macros = consolidateAdapterMacros(package_macros, adapter);
-            macros = macros.concat(pkg_macros);
+            var pkg_macros = consolidateAdapterMacros(package_macros);
+            newMacros = newMacros.concat(pkg_macros);
         });
 
-        return _.keyBy(macros, 'unique_id');
+        return _.keyBy(newMacros, 'unique_id');
     }
 
     service.getModelTree = function(select, cb) {
@@ -354,6 +357,7 @@ angular
             var macros = _.values(service.project.macros);
             var nodes = _.filter(service.project.nodes, function(node) {
                 // only grab custom singular tests
+                // eslint-disable-next-line no-prototype-builtins -- TODO
                 if (node.resource_type == 'test' && !node.hasOwnProperty('test_metadata')) {
                     return true;
                 }
@@ -370,7 +374,7 @@ angular
 
             var exposures = _.values(service.project.exposures);
             service.tree.exposures = buildExposureTree(exposures, select);
-            
+
             var metrics = _.values(service.project.metrics);
             service.tree.metrics = buildMetricTree(metrics, select);
 
@@ -453,7 +457,7 @@ angular
         });
 
         // sort schemas
-        var sources = _.sortBy(_.values(sources), 'name');
+        sources = _.sortBy(_.values(sources), 'name');
 
         // sort tables in the schema
         _.each(sources, function(source) {
@@ -467,8 +471,6 @@ angular
         var exposures = {}
 
         _.each(nodes, function(node) {
-            var name = node.name;
-
             var type = node.type || 'Uncategorized';
             type = capitalizeType(type);
 
@@ -496,7 +498,7 @@ angular
         });
 
         // sort exposure types
-        var exposures = _.sortBy(_.values(exposures), 'name');
+        exposures = _.sortBy(_.values(exposures), 'name');
 
         // sort entries in the exposure folder
         _.each(exposures, function(exposure) {
@@ -505,13 +507,11 @@ angular
 
         return exposures
     }
-    
+
     function buildMetricTree(nodes, select) {
         var metrics = {}
 
         _.each(nodes, function(node) {
-            var name = node.name;
-
             var project = node.package_name;
 
             var is_active = node.unique_id == select;
@@ -537,16 +537,16 @@ angular
             })
         });
 
-        var metrics = _.sortBy(_.values(metrics), 'name');
+        metrics = _.sortBy(_.values(metrics), 'name');
 
         _.each(metrics, function(metric) {
-            metrics.items = _.sortBy(metrics.items, 'name');
+            metric.items = _.sortBy(metric.items, 'name');
         });
 
         return metrics
     }
 
-    function consolidateAdapterMacros(macros, adapter) {
+    function consolidateAdapterMacros(macros) {
         var adapter_macros = {};
         _.each(macros, function(macro) {
             if (macro.macro_sql.match(/{{\s*adapter_macro\([^)]+\)\s+}}/)) {
@@ -587,8 +587,8 @@ angular
     function buildProjectTree(nodes, macros, select) {
         var tree = {};
 
-        var nodes = nodes || [];
-        var macros = macros || [];
+        nodes = nodes || [];
+        macros = macros || [];
 
         _.each(nodes.concat(macros), function(node) {
             var show = _.get(node, ['docs', 'show'], true);
@@ -599,10 +599,11 @@ angular
                 return;
             }
 
+            var path_parts;
             if (node.original_file_path.indexOf("\\") != -1) {
-                var path_parts = node.original_file_path.split("\\");
+                path_parts = node.original_file_path.split("\\");
             } else {
-                var path_parts = node.original_file_path.split("/");
+                path_parts = node.original_file_path.split("/");
             }
 
             var path = [node.package_name].concat(path_parts);
@@ -610,10 +611,11 @@ angular
 
             var dirpath = _.initial(path);
 
+            var fname;
             if (node.resource_type == 'macro') {
-                var fname = node.name;
+                fname = node.name;
             } else {
-                var fname = _.last(path);
+                fname = _.last(path);
             }
 
             var cur_dir = tree;
@@ -674,7 +676,7 @@ angular
 
             var by_schema = _.groupBy(db_nodes, 'schema');
             _.each(by_schema, function(schema_nodes, schema) {
-                var schema = {
+                schema = {
                     type: "schema",
                     name: schema,
                     active: false,

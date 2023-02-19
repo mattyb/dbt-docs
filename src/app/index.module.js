@@ -5,7 +5,7 @@ require('./../assets/css/styles.css');
 const $ = require('jquery');
 const angular = require('angular');
 
-// dumb hack to fix bootstrap
+// eslint-disable-next-line angular/window-service -- dumb hack to fix bootstrap
 window.jQuery = $;
 require('bootstrap/js/tooltip');
 require('bootstrap/js/popover');

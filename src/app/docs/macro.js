@@ -8,8 +8,8 @@ require("./styles.css");
 
 angular
 .module('dbt')
-.controller('MacroCtrl', ['$scope', '$state', 'project', 'code', '$transitions', '$anchorScroll', '$location',
-            function($scope, $state, projectService, codeService, $transitions, $anchorScroll, $location) {
+.controller('MacroCtrl', ['$scope', '$state', 'project', 'code',
+            function($scope, $state, projectService, codeService) {
 
     $scope.model_uid = $state.params.unique_id;
     $scope.tab = $state.params.tab;

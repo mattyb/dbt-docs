@@ -1,8 +1,8 @@
 const angular = require('angular');
-const $ = require("jquery");
 const _ = require('underscore');
 
 import Prism from 'prismjs';
+// eslint-disable-next-line angular/window-service -- TODO
 window.Prism = Prism;
 
 import 'prismjs/components/prism-sql';
@@ -13,7 +13,7 @@ import 'prism-themes/themes/prism-ghcolors.css';
 
 angular
 .module('dbt')
-.factory('code', ['$sce', function($sce) {
+.factory('code', ['$sce', '$document', function($sce, $document) {
 
     var service = {}
 
@@ -21,25 +21,26 @@ angular
     service.copied = false;
 
     service.highlight = function(code, language = 'sql') {
+        var highlighted;
         if (language == 'sql') {
-            var highlighted = Prism.highlight(code, Prism.languages.sql, 'sql')
+            highlighted = Prism.highlight(code, Prism.languages.sql, 'sql')
         }
         else if (language == 'python') {
-            var highlighted = Prism.highlight(code, Prism.languages.python, 'python')
+            highlighted = Prism.highlight(code, Prism.languages.python, 'python')
         }
         return $sce.trustAsHtml(highlighted);
     }
 
     service.copy_to_clipboard = function(text) {
-        var el = document.createElement('textarea');
+        var el = $document.createElement('textarea');
         el.value = text;
         el.setAttribute('readonly', '');
         el.style.position = 'absolute';
         el.style.left = '-9999px';
-        document.body.appendChild(el);
+        $document.body.appendChild(el);
         el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+        $document.execCommand('copy');
+        $document.body.removeChild(el);
     };
 
     service.generateSourceSQL = function(model) {

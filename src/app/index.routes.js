@@ -10,7 +10,6 @@ const templates = {
     source_list: require('./sources/source_list.html'),
 
     model: require('./docs/model.html'),
-    source: require('./docs/source.html'),
     snapshot: require('./docs/snapshot.html'),
     seed: require('./docs/seed.html'),
     test: require('./docs/test.html'),

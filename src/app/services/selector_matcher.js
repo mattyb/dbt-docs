@@ -77,9 +77,9 @@ function getNodesByFQN(elements, qualified_name) {
         var fqn = node.fqn;
 
         if (
-          !fqn || 
-          node.resource_type == 'source' || 
-          node.resource_type == 'exposure' || 
+          !fqn ||
+          node.resource_type == 'source' ||
+          node.resource_type == 'exposure' ||
           node.resource_type == 'metric'
         ) {
             return;
@@ -215,8 +215,10 @@ function getNodesByTestType(elements, test_type) {
             return false;
         // generic tests have `test_metadata`, singular tests do not
         // for backwards compatibility, keep supporting old test_type names
+        // eslint-disable-next-line no-prototype-builtins -- TODO
         } else if (node.hasOwnProperty('test_metadata') && ['schema', 'generic'].indexOf(test_type) > -1) {
             nodes.push(node);
+        // eslint-disable-next-line no-prototype-builtins -- TODO
         } else if (!node.hasOwnProperty('test_metadata') && ['data', 'singular'].indexOf(test_type) > -1) {
             nodes.push(node);
         }
@@ -322,17 +324,18 @@ function getNodesFromSpec(dag, pristine_nodes, maxHops, selector) {
         var upstream = [];
         var downstream = [];
         var both = []
+        var hops;
         if (selector.select_at) {
             both = _.union(selectorGraph.selectAt(dag, selected_node));
         }
 
         if (selector.select_parents) {
-            var hops = maxHops || selector.parents_depth;
+            hops = maxHops || selector.parents_depth;
             upstream = selectorGraph.ancestorNodes(dag, selected_node, hops);
         }
 
         if (selector.select_children) {
-            var hops = maxHops || selector.children_depth;
+            hops = maxHops || selector.children_depth;
             downstream = selectorGraph.descendentNodes(dag, selected_node, hops)
         }
 

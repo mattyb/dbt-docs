@@ -1,5 +1,4 @@
 
-const $ = require('jquery');
 const _ = require('underscore');
 
 const graphlib = require('graphlib');
@@ -230,7 +229,7 @@ angular
                     }
                 },
             ],
-            ready: function(e) {
+            ready: function(_e) {
                 console.log("graph ready");
             },
         }
@@ -265,18 +264,17 @@ angular
             config = {set: children, index: _.indexOf(children, this_node), factor: 1, type: 'child'}
         } else {
             return {x: 0, y: 0}
-            console.log('oops');
-            debugger
         }
 
         var size = config.set.length;
+        var res;
         if (config.type == 'parent') {
-            var res = {
+            res = {
                 x: (0 + config.index) * scale_x,
                 y: -(2 * scale_y) - (size - config.index - 1) * scale_y
             }
         } else {
-            var res = {
+            res = {
                 x: (0 + config.index) * scale_x,
                 y: (2 * scale_y) + (size - config.index - 1) * scale_y
             }
@@ -358,6 +356,7 @@ angular
         _.each(_.filter(service.manifest.nodes, function(node) {
             // operation needs to be a graph type so that the parent/child mpa can be resolved even though we won't be displaying it
             var is_graph_type = _.includes(['model', 'seed', 'source', 'snapshot', 'analysis', 'exposure', 'metric', 'operation'], node.resource_type);
+            // eslint-disable-next-line no-prototype-builtins -- TODO
             var is_singular_test = node.resource_type == 'test' && !node.hasOwnProperty('test_metadata');
             return is_graph_type || is_singular_test;
         }), function(node) {
@@ -380,6 +379,7 @@ angular
 
                 if (!_.includes(['model', 'source', 'seed', 'snapshot', 'metric'], parent_node.resource_type)) {
                     return;
+                // eslint-disable-next-line no-prototype-builtins -- TODO
                 } else if (child_node.resource_type == 'test' && child_node.hasOwnProperty('test_metadata')) {
                     return;
                 }
@@ -509,8 +509,6 @@ angular
         if (service.orientation != 'fullscreen') {
             return;
         }
-
-        var node = service.graph.pristine.nodes[node_id];
 
         // get all edges that pass through this node
         var dag = service.graph.pristine.dag;

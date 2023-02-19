@@ -1,6 +1,5 @@
 'use strict';
 
-const styles = require("./graph-viz.css");
 const template = require('./graph-viz.html');
 
 const _ = require('underscore');
@@ -16,10 +15,9 @@ cytoscape.use(dagre);
 
 angular
 .module('dbt')
-.directive('graphViz', ['$q', '$state', 'graph', 'selectorService', 'project', '$timeout',
-           function($q, $state, graph, selectorService, project, $timeout) {
+.directive('graphViz', ['$q', '$state', 'graph', 'selectorService', 'project', '$timeout', '$document', '$window',
+           function($q, $state, graph, selectorService, project, $timeout, $document, $window) {
     var directive = {
-        restrict: 'EA',
         replace: true,
         scope: {
             vizElements: '=',
@@ -40,18 +38,17 @@ angular
 
     function __rerender(scope, cy) {
         if (scope.vizLayout && scope.vizLayout.name) {
-            var layout = cy.layout(scope.vizLayout);
-            var res = layout.run();
+            cy.layout(scope.vizLayout);
             scope.vizRendered(cy);
         }
     }
 
-    function linkFn(scope,element,attrs,ctrlFn){
+    function linkFn(scope,_element,_attrs,_ctrlFn){
 
         //var rerender = _.debounce(__rerender, 0);
         var rerender = __rerender;
 
-        scope.$watch('vizSize', function(nv,ov){
+        scope.$watch('vizSize', function(nv, _ov){
             $timeout(function() {
                 cy.resize();
                 if (nv == 'fullscreen') {
@@ -62,21 +59,16 @@ angular
             });
         });
 
-        $(".viz-option").on('changed.bs.select', function (e) {
-            var option = $(e.target).data("option");
-            var selected = $(e.target).val()
-        })
-
         // initialize cytoscape
         var cy = cytoscape(_.assign({}, scope.vizOptions, {
-            container: document.getElementById('cy'),
+            container: $document.getElementById('cy'),
             style: scope.vizStyle || [],
             elements: scope.vizElements || [],
             layout: scope.vizLayout || {name: "circle"}
         }));
 
-        if (!window.graph) {
-            window.graph = cy;
+        if (!$window.graph) {
+            $window.graph = cy;
         }
 
         if(scope.graphReady){
@@ -94,23 +86,21 @@ angular
             });
         });
 
-        cy.on('unselect', function(e) {
-            var node = e.target;
-
+        cy.on('unselect', function(_e) {
             scope.$apply(function() {
                 graph.deselectNodes();
                 cy.forceRender()
             });
         });
 
-        scope.$watch('vizElements', function(nv,ov){
+        scope.$watch('vizElements', function(nv, _ov){
             cy.remove(cy.elements());
             cy.add(nv);
             rerender(scope, cy);
             console.log('elements changed, UPDATE');
         });
 
-        scope.$watch('vizLayout', function(nv,ov){
+        scope.$watch('vizLayout', function(nv, ov){
             if(nv !== ov){
                 rerender(scope, cy);
             }
@@ -119,9 +109,6 @@ angular
         scope.$watch('vizOptions', function(nv,ov){
             if(nv !== ov){
                 _.each(nv, function(val, key) {
-                    if (!cy[key]) {
-                        debugger
-                    }
                     cy[key](val);
                 })
             }
@@ -139,7 +126,7 @@ angular
         });
 
         // initialize ctx menu plugin
-        var contextMenu = cy.contextMenus({
+        cy.contextMenus({
             menuItems: [
                 {
                     id: 'jump',
@@ -203,12 +190,12 @@ angular
                     content: 'Export PNG',
                     selector: 'node',
                     coreAsWell: true,
-                    onClickFunction: function(event) {
+                    onClickFunction: function(_e) {
                         var options = {
                             bg: '#005e7a'
                         };
                         var png64 = cy.png(options);
-                        var link = document.createElement('a');
+                        var link = $document.createElement('a');
                         link.download = 'dbt-dag.png';  // sets the filename for the download
                         link.href = png64;
                         link.click();
@@ -219,7 +206,5 @@ angular
             menuItemClasses: ['graph-node-context-menu-item'],
             contextMenuClasses: ['graph-node-context-menu']
         });
-
     }
-
 }]);
