@@ -212,14 +212,14 @@ function getNodesByTestType(elements, test_type) {
       return false;
       // generic tests have `test_metadata`, singular tests do not
       // for backwards compatibility, keep supporting old test_type names
-      // eslint-disable-next-line no-prototype-builtins -- TODO
     } else if (
+      // eslint-disable-next-line no-prototype-builtins -- TODO
       node.hasOwnProperty("test_metadata") &&
       ["schema", "generic"].indexOf(test_type) > -1
     ) {
       nodes.push(node);
-      // eslint-disable-next-line no-prototype-builtins -- TODO
     } else if (
+      // eslint-disable-next-line no-prototype-builtins -- TODO
       !node.hasOwnProperty("test_metadata") &&
       ["data", "singular"].indexOf(test_type) > -1
     ) {

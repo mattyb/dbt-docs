@@ -404,9 +404,9 @@ angular.module("dbt").factory("project", [
         var macros = _.values(service.project.macros);
         var nodes = _.filter(service.project.nodes, function (node) {
           // only grab custom singular tests
-          // eslint-disable-next-line no-prototype-builtins -- TODO
           if (
             node.resource_type == "test" &&
+            // eslint-disable-next-line no-prototype-builtins -- TODO
             !node.hasOwnProperty("test_metadata")
           ) {
             return true;

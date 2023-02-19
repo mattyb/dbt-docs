@@ -409,9 +409,9 @@ angular.module("dbt").factory("graph", [
             ],
             node.resource_type
           );
-          // eslint-disable-next-line no-prototype-builtins -- TODO
           var is_singular_test =
             node.resource_type == "test" &&
+            // eslint-disable-next-line no-prototype-builtins -- TODO
             !node.hasOwnProperty("test_metadata");
           return is_graph_type || is_singular_test;
         }),
@@ -441,9 +441,9 @@ angular.module("dbt").factory("graph", [
             )
           ) {
             return;
-            // eslint-disable-next-line no-prototype-builtins -- TODO
           } else if (
             child_node.resource_type == "test" &&
+            // eslint-disable-next-line no-prototype-builtins -- TODO
             child_node.hasOwnProperty("test_metadata")
           ) {
             return;
