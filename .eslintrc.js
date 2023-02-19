@@ -17,10 +17,15 @@ module.exports = {
     "es6": true,
     "amd": true,
     "commonjs": true,
+    "es2017": true,
+  },
+  "parserOptions": {
+    "sourceType": "module",
   },
   "rules": {
-    "angular/controller-as-route": "off", // TODO
-    "angular/controller-as": "off", // TODO
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "angular/controller-as-route": "off",
+    "angular/controller-as": "off",
     "angular/file-name": "warn",
     "angular/controller-name": "warn",
     "angular/function-type": ["error", "anonymous"],
@@ -28,6 +33,7 @@ module.exports = {
   "globals": {
     "angular": "readonly",
     "_": "writeable",
+    "Prism": "readonly",
   },
   "overrides": [{
     "files": [
